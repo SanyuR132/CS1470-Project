@@ -38,7 +38,7 @@ def read_data(file_name, ATSA=False):
             sentence_data.append(text)
             aspect_list.append(aspect_name)
             labels.append(polarity)
-    return sentence_data, aspects, labels
+    return sentence_data, aspect_list, labels
 
 
 def sentence_tokenizer(sentence):
@@ -74,13 +74,13 @@ Convert sentences to indexed
 
 def pad_sentence(sentence, num_padding):
     if (num_padding % 2 == 0):
-        num_left = num_right = num_padding / 2
+        num_left = num_right = num_padding // 2
     else:
         num_left = int(num_padding / 2)
         num_right = num_left + 1
-    num_per_side = num_padding / 2
     sentence = [PAD_TOKEN]*num_left + \
         sentence + [PAD_TOKEN]*num_right
+    return sentence
 
 
 def get_label_ids(train_labels, test_labels):
@@ -135,40 +135,38 @@ def get_data(train_data_file, test_data_file, batch_size, ATSA=False):
 
     vocab, token_id = build_vocab(tokenized_train)
 
-    for sent in tokenized_train:
-        sent = pad_sentence(sent, max_sent_len_train - len(sent))
+    
+    tokenized_train = [pad_sentence(sent, max_sent_len_train - len(sent)) for sent in tokenized_train]
 
-    for sent in tokenized_test:
-        sent = pad_sentence(sent, max_sent_len_test - len(sent))
+    tokenized_test = [pad_sentence(sent, max_sent_len_test - len(sent)) for sent in tokenized_test]
+
+    train_ids = convert_to_id(vocab, tokenized_train)
+    test_ids = convert_to_id(vocab, tokenized_test)
 
     train_labels, test_labels = get_label_ids(train_labels, test_labels)
 
     if not ATSA:
-        train_aspects, test_aspects = get_aspect_category_ids(
+        train_aspects, test_aspects = get_aspect_categories_ids(
             train_aspects, test_aspects)
     else:
         tokenized_term_train = []
-        tokenized_term_train = []
-        term_ids_train = []
-        term_ids_test = []
+        tokenized_term_test = []
         for term in train_aspects:
             if len(sent) > max_term_len_ATSA_train:
                 max_term_len_ATSA_train = len(term)
             tokenized_term_train.append(sentence_tokenizer(term))
         # TODO TODO TODO check if padding should be on both sides vs just one side TODO TODO TODO
-        for term in tokenized_term_train:
-            term = pad_sentence(term, max_term_len_ATSA_train - len(term))
+        tokenized_term_train = [pad_sentence(term, max_term_len_ATSA_train - len(term)) for term in tokenized_term_train]
         for term in test_aspects:
             if len(sent) > max_term_len_ATSA_test:
                 max_term_len_ATSA_test = len(term)
             tokenized_term_test.append(sentence_tokenizer(term))
         # TODO TODO TODO check if padding should be on both sides vs just one side TODO TODO TODO
-        for term in tokenized_term_test:
-            term = pad_sentence(term, max_term_len_ATSA_test - len(term))
+        tokenized_term_test = [pad_sentence(term, max_term_len_ATSA_test - len(term)) for term in tokenized_term_test]
 
         term_vocab, term_token_id = build_vocab(tokenized_term_train)
         train_aspects = convert_to_id(term_vocab, tokenized_term_train)
-        term_ids_test = convert_to_id(term_vocab, tokenized_term_test)
+        test_aspects = convert_to_id(term_vocab, tokenized_term_test)
 
     train_loader = tf.data.Dataset.from_tensor_slices(
         (train_ids, train_aspects, train_labels))
@@ -184,8 +182,16 @@ def get_data(train_data_file, test_data_file, batch_size, ATSA=False):
 
 def main():
     train_loader, test_loader = get_data('data/train.xml', 'data/test.xml', 10)
-    print(train_loader[0])
-
+    i = 0
+    for batch in test_loader:
+        i+=1
+        if i == 2:
+            break
+        ids, aspects, labels = batch
+        print(ids)
+        print(aspects)
+        print(labels)
+    
 
 if __name__ == '__main__':
     main()
