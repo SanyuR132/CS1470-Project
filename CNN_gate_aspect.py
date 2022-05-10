@@ -21,12 +21,22 @@ class CNN_Gate_Aspect_Text(tf.keras.model):
         self.fc_aspect = tf.nn.linear(Co)
 
     def forward(self, feature, aspect):
+        
+        aspect_v = aspect_v.sum(1) / aspect_v.size(1)
 
         x = tf.nn.tanh(self.conv_layer_11(feature))
         x = tf.nn.tanh(self.conv_layer_12(x))
         x = tf.nn.tanh(self.conv_layer_13(x))
 
-        y =  tf.nn.relu(self.conv_layer_21(feature) + self.fc_aspect(aspect))
-        y =  tf.nn.relu(self.conv_layer_22(y) + self.fc_aspect(aspect))
-        y =  tf.nn.relu(self.conv_layer_23(y) + self.fc_aspect(aspect))
+        y =  tf.nn.relu(self.conv_layer_21(feature) + self.fc_aspect(aspect_v).unsqueeze(2))
+        y =  tf.nn.relu(self.conv_layer_22(y) + self.fc_aspect(aspect_v).unsqueeze(2))
+        y =  tf.nn.relu(self.conv_layer_23(y) + self.fc_aspect(aspect_v).unsqueeze(2))
+
+        x = [i*j for i,j in zip(x,y)]
+
+        x0 = [tf.keras.layers.MaxPooling1D(i, i.size(2)).squeeze(2) for i in x]
+
+        logit = self.fully_connected(x0)
+        return logit, x, y
+
 
