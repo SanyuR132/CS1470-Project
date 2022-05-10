@@ -17,6 +17,12 @@ class CNN_Gate_Aspect_Text(tf.keras.model):
         self.conv_layer_22 = tf.nn.conv1d(D, Co, 4)
         self.conv_layer_23 = tf.nn.conv1d(D, Co, 5)
 
+        self.conv_layer_31 = tf.nn.conv1d(D, Co, 3, padding = 2)
+        self.conv_layer_32 = tf.nn.conv1d(D, Co, 4, padding = 2)
+        self.conv_layer_33 = tf.nn.conv1d(D, Co, 5, padding = 2)
+        
+        self.dropout = tf.nn.dropout(0.2)
+
         self.fully_connected = tf.nn.linear(C)
         self.fc_aspect = tf.nn.linear(Co)
 
