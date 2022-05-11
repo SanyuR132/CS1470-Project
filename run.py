@@ -31,7 +31,7 @@ args = parser.parse_args()
 
 
 def pickle_it():
-    if args.atsa:
+    if not args.atsa:
         acsa_train_loader, acsa_test_loader, acsa_vocab, acsa_aspect_vocab = get_data(
             train_data_file="./data/acsa_train.xml", test_data_file="./data/acsa_test.xml", batch_size=args.batch_size, ATSA=args.atsa)
         print('finished loading and beginning embedding')
@@ -66,7 +66,7 @@ def pickle_it():
 def main():
     if (args.glove_file_path != ""):
         pickle_it()
-    if args.atsa:
+    if not args.atsa:
         acsa_train_loader = tf.data.experimental.load('acsa_train_load')
         acsa_test_loader = tf.data.experimental.load('acsa_test_load')
         dbfile4 = open('acsa_embedding_matrix', 'rb')
