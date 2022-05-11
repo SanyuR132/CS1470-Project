@@ -7,7 +7,7 @@ class CNN_Gate_Aspect_Text(tf.keras.Model):
         super(CNN_Gate_Aspect_Text, self).__init__()
         D = args.embedding_dim  # embedding dimension
         C = 3  # no. of output classes
-        Co = 3  # no. of kernels/filters
+        Co = 100  # no. of kernels/filters
 
         self.feature_embedding_layer = tf.keras.layers.Embedding(len(feature_embeddings), D,
                                                                  embeddings_initializer=keras.initializers.Constant(feature_embeddings), trainable=True)
