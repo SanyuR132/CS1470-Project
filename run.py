@@ -107,8 +107,8 @@ def train(model, train_loader):
             train_correct_cases += num_correct
             total_accuracy += num_correct / args.batch_size
         total_accuracy = total_accuracy/(train_total_cases/args.batch_size)
-    print(
-        f'epoch {epoch} has acc {total_accuracy}, max_correct is {max_correct}')
+        print(
+            f'epoch {epoch} has acc {total_accuracy}, max_correct is {max_correct}')
     return total_accuracy
 
 
