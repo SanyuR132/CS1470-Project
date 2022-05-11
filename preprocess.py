@@ -179,19 +179,3 @@ def get_data(train_data_file, test_data_file, batch_size, ATSA=False):
 
     return train_loader, test_loader
 
-
-def main():
-    train_loader, test_loader = get_data('data/train.xml', 'data/test.xml', 10)
-    i = 0
-    for batch in test_loader:
-        i+=1
-        if i == 2:
-            break
-        ids, aspects, labels = batch
-        print(ids)
-        print(aspects)
-        print(labels)
-    
-
-if __name__ == '__main__':
-    main()

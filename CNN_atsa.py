@@ -2,7 +2,7 @@ import tensorflow as tf
 import numpy as np
 import math
 
-class CNN_Gate_Aspect_Text(tf.keras.model):
+class CNN_Gate_Aspect_Text(tf.keras.Model):
     def __init__(self, args):
         D = args.embed_dim
         C = args.class_num
