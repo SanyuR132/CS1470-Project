@@ -51,10 +51,10 @@ class CNN_Gate_Aspect_Text(tf.keras.Model):
              tf.nn.tanh(self.conv_layer_12(feature)),
              tf.nn.tanh(self.conv_layer_13(feature))]
 
-        y = [tf.nn.relu(self.conv_layer_21(feature) + self.fc_aspect(tf.expand_dims(aspect_v, 0))),
+        y = [tf.nn.relu(self.conv_layer_21(feature) + self.fc_aspect(aspect_v)),
              tf.nn.relu(self.conv_layer_22(feature) +
-                        self.fc_aspect(tf.expand_dims(aspect_v, 0))),
-             tf.nn.relu(self.conv_layer_23(feature) + self.fc_aspect(tf.expand_dims(aspect_v, 0)))]
+                        self.fc_aspect(aspect_v)),
+             tf.nn.relu(self.conv_layer_23(feature) + self.fc_aspect(aspect_v))]
 
         x = [i*j for i, j in zip(x, y)]
 
