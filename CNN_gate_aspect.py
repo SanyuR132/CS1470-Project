@@ -3,11 +3,11 @@ import numpy as np
 from tensorflow import keras
 
 class CNN_Gate_Aspect_Text(tf.keras.model):
-    def __init__(self, args, embeddings):
+    def __init__(self, embeddings):
         D = embeddings.shape[1]
-        C = args.class_num
+        C = 4
 
-        Co = args.kernel_num
+        Co = 3
 
         self.embedding_layer = tf.keras.layers.Embedding(len(embeddings), D, 
         embeddings_initializer= keras.initializers.Constant(embeddings), trainable = True)
