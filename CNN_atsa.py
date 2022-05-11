@@ -1,3 +1,4 @@
+from curses import A_ALTCHARSET
 import tensorflow as tf
 import numpy as np
 import math
@@ -28,12 +29,24 @@ class CNN_Gate_Aspect_Text(tf.keras.model):
 
     def forward(self, feature, aspect):
         aspect_v = aspect_v.sum(1) / aspect_v.size(1)
-        
-        x = tf.nn.tanh(self.conv_layer_11(feature))
-        x = tf.nn.tanh(self.conv_layer_12(x))
-        x = tf.nn.tanh(self.conv_layer_13(x))
 
-        y =  tf.nn.relu(self.conv_layer_21(feature) + self.fc_aspect(aspect_v))
-        y =  tf.nn.relu(self.conv_layer_22(y) + self.fc_aspect(aspect_v))
-        y =  tf.nn.relu(self.conv_layer_23(y) + self.fc_aspect(aspect_v))
+        aa = [tf.nn.relu(self.conv_layer_31(aspect_v.transpose(1,2))),
+              tf.nn.relu(self.conv_layer_32(aspect_v.transpose(1,2))),
+              tf.nn.relu(self.conv_layer_33(aspect_v.transpose(1,2)))]
+
+        x = [tf.nn.tanh(self.conv_layer_11(feature.transpose(1,2))),
+            tf.nn.tanh(self.conv_layer_12(feature.transpose(1,2))),
+            tf.nn.tanh(self.conv_layer_13(feature.transpose(1,2)))]
+
+        y =  [tf.nn.relu(self.conv_layer_21(feature) + self.fc_aspect(aspect_v)),
+              tf.nn.relu(self.conv_layer_22(y) + self.fc_aspect(aspect_v)),
+              tf.nn.relu(self.conv_layer_23(y) + self.fc_aspect(aspect_v))]
+        
+        x = [i*j for i, j in zip(x, y)]
+        x = [tf.keras.layers.MaxPooling1D(i, i.size(2)).squeeze(2) for i in x]
+
+        x = tf.cat(x, 1)
+        x = self.dropout(x)  
+        logit = self.fc1(x) 
+        return logit, x, y
 
