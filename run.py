@@ -81,7 +81,7 @@ def main():
         print('begin training')
         acc = train(acsa_model, acsa_train_loader)
         print('finish training')
-        print(f'acc is {acc}')
+        print(f'main acc is {acc}')
         test_acc = test(acsa_model, acsa_test_loader)
         print(f'test acc is {test_acc}')
     else:
@@ -116,7 +116,7 @@ def train(model, train_loader):
         max_correct = 0
         for batch in train_loader:
             sentences, aspects, labels = batch
-            if len(sentences) != 100:
+            if len(sentences) != args.batch_size:
                 continue
             with tf.GradientTape() as tape:
                 probs, x, y = model.forward(sentences, aspects)
@@ -131,9 +131,10 @@ def train(model, train_loader):
                 print(f'there were {filtered} values over 2')
             num_correct = tf.reduce_sum(
                 tf.cast(tf.equal(predictions, labels), dtype=tf.float32))
-            print(f'acc is {num_correct / args.batch_size}')
+            print(f'batch acc is {num_correct / args.batch_size}')
+            print(f'correct batch size = {args.batch_size}')
+            print(f'actual batch size = {len(labels)}')
             max_correct = max(max_correct, num_correct)
-            train_correct_cases += num_correct
             total_accuracy += num_correct / args.batch_size
         total_accuracy = total_accuracy/(train_total_cases/args.batch_size)
         print(
