@@ -138,7 +138,7 @@ def get_data(train_data_file, test_data_file, batch_size, ATSA=False):
     
     tokenized_train = [pad_sentence(sent, max_sent_len_train - len(sent)) for sent in tokenized_train]
 
-    tokenized_test = [pad_sentence(sent, max_sent_len_test - len(sent)) for sent in tokenized_test]
+    tokenized_test = [pad_sentence(sent, max_sent_len_train - len(sent)) for sent in tokenized_test]
 
     train_ids = convert_to_id(vocab, tokenized_train)
     test_ids = convert_to_id(vocab, tokenized_test)
@@ -172,7 +172,7 @@ def get_data(train_data_file, test_data_file, batch_size, ATSA=False):
                 max_term_len_ATSA_test = len(term)
             tokenized_term_test.append(sentence_tokenizer(term))
         # TODO TODO TODO check if padding should be on both sides vs just one side TODO TODO TODO
-        tokenized_term_test = [pad_sentence(term, max_term_len_ATSA_test - len(term)) for term in tokenized_term_test]
+        tokenized_term_test = [pad_sentence(term, max_term_len_ATSA_train - len(term)) for term in tokenized_term_test]
 
         term_vocab, term_token_id = build_vocab(tokenized_term_train)
         train_aspects = convert_to_id(term_vocab, tokenized_term_train)

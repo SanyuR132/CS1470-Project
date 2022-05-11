@@ -6,7 +6,7 @@ class CNN_Gate_Aspect_Text(tf.keras.Model):
     def __init__(self, feature_embeddings, aspect_embeddings):
         super(CNN_Gate_Aspect_Text, self).__init__()
         D = feature_embeddings.shape[1]  # embedding dimension
-        C = 4  # no. of output classes
+        C = 3  # no. of output classes
         Co = 3  # no. of kernels/filters
 
         self.feature_embedding_layer = tf.keras.layers.Embedding(len(feature_embeddings), D,
@@ -58,6 +58,6 @@ class CNN_Gate_Aspect_Text(tf.keras.Model):
         x0 = tf.concat(x0, 1)
         logit = self.fully_connected(x0)
 
-        print(tf.shape(logit))
+        # print(tf.shape(logit))
 
         return logit, x, y

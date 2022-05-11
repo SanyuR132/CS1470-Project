@@ -17,7 +17,7 @@ def load_glove_embedding(path_to_glove_file, vocab, aspect_vocab, embedding_dim)
     num_tokens = len(vocab) + 1
     embedding_matrix = np.zeros((num_tokens, embedding_dim))
     embedding_matrix_terms = np.zeros((num_tokens, embedding_dim))
-    with open(path_to_glove_file) as f:
+    with open(path_to_glove_file, encoding="utf-8") as f:
         for line in f:
             word, coefs = line.split(maxsplit=1)
             coefs = np.fromstring(coefs, "f", sep=" ")
