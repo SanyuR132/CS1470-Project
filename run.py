@@ -116,6 +116,8 @@ def train(model, train_loader):
         max_correct = 0
         for batch in train_loader:
             sentences, aspects, labels = batch
+            print(f'correct batch size = {args.batch_size}')
+            print(f'actual batch size = {len(sentences)}')
             if len(sentences) != args.batch_size:
                 continue
             with tf.GradientTape() as tape:
@@ -132,8 +134,7 @@ def train(model, train_loader):
             num_correct = tf.reduce_sum(
                 tf.cast(tf.equal(predictions, labels), dtype=tf.float32))
             print(f'batch acc is {num_correct / args.batch_size}')
-            print(f'correct batch size = {args.batch_size}')
-            print(f'actual batch size = {len(labels)}')
+
             max_correct = max(max_correct, num_correct)
             total_accuracy += num_correct / args.batch_size
         total_accuracy = total_accuracy/(train_total_cases/args.batch_size)
