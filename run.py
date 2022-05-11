@@ -128,7 +128,7 @@ def test(model, test_loader):
         test_correct_cases += num_correct
         test_accuracy = test_correct_cases / args.batch_size
         total_accuracy += test_accuracy
-    total_accuracy = total_accuracy/(test_total_case/args.batch_sizes)
+    total_accuracy = total_accuracy/(test_total_cases/args.batch_size)
     return total_accuracy
 
 
