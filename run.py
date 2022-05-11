@@ -116,8 +116,6 @@ def train(model, train_loader):
         max_correct = 0
         for batch in train_loader:
             sentences, aspects, labels = batch
-            print(f'correct batch size = {args.batch_size}')
-            print(f'actual batch size = {len(sentences)}')
             if len(sentences) != args.batch_size:
                 continue
             with tf.GradientTape() as tape:
@@ -150,7 +148,7 @@ def test(model, test_loader):
     total_accuracy = 0
     for batch in test_loader:
         sentences, aspects, labels = batch
-        if len(sentences) != 100:
+        if len(sentences) != args.batch_size:
             continue
         probs, x, y = model.forward(sentences, aspects)
         predictions = tf.math.argmax(probs, 1, output_type=tf.int32)
