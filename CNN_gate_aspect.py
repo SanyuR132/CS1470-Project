@@ -3,7 +3,7 @@ from tensorflow import keras
 
 
 class CNN_Gate_Aspect_Text(tf.keras.Model):
-    def __init__(self, feature_embeddings, aspect_embeddings):
+    def __init__(self, feature_embeddings, aspect_embeddings, args):
         super(CNN_Gate_Aspect_Text, self).__init__()
         D = feature_embeddings.shape[1]  # embedding dimension
         C = 3  # no. of output classes
@@ -56,8 +56,9 @@ class CNN_Gate_Aspect_Text(tf.keras.Model):
         x0 = [tf.reshape(i, (tf.shape(i)[0], -1)) for i in x]
 
         x0 = tf.concat(x0, 1)
-        logit = self.fully_connected(x0)
+        logits = self.fully_connected(x0)
+        probs = tf.nn.softmax(logits)
 
         # print(tf.shape(logit))
 
-        return logit, x, y
+        return probs, x, y
