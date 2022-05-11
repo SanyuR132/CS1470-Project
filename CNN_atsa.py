@@ -24,8 +24,8 @@ class CNN_Gate_Aspect_Text(tf.keras.model):
 
         self.dropout = tf.nn.dropout(0.2)
 
-        self.fully_connected = tf.nn.linear(C)
-        self.fc_aspect = tf.nn.linear(Co)
+        self.fully_connected = tf.keras.layers.Dense(C)
+        self.fc_aspect = tf.keras.layers.Dense(Co)
 
     def forward(self, feature, aspect):
         aspect_v = aspect_v.sum(1) / aspect_v.size(1)
@@ -38,9 +38,9 @@ class CNN_Gate_Aspect_Text(tf.keras.model):
             tf.nn.tanh(self.conv_layer_12(feature.transpose(1,2))),
             tf.nn.tanh(self.conv_layer_13(feature.transpose(1,2)))]
 
-        y =  [tf.nn.relu(self.conv_layer_21(feature) + self.fc_aspect(aspect_v)),
-              tf.nn.relu(self.conv_layer_22(y) + self.fc_aspect(aspect_v)),
-              tf.nn.relu(self.conv_layer_23(y) + self.fc_aspect(aspect_v))]
+        y =  [tf.nn.relu(self.conv_layer_21(feature.transpose(1,2)) + self.fc_aspect(aspect_v)),
+              tf.nn.relu(self.conv_layer_22(feature.transpose(1,2)) + self.fc_aspect(aspect_v)),
+              tf.nn.relu(self.conv_layer_23(feature.transpose(1,2)) + self.fc_aspect(aspect_v))]
         
         x = [i*j for i, j in zip(x, y)]
         x = [tf.keras.layers.MaxPooling1D(i, i.size(2)).squeeze(2) for i in x]
