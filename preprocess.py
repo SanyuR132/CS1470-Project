@@ -148,6 +148,16 @@ def get_data(train_data_file, test_data_file, batch_size, ATSA=False):
     if not ATSA:
         train_aspects, test_aspects = get_aspect_categories_ids(
             train_aspects, test_aspects)
+        term_vocab = {
+            'food': 0,
+            'service': 1,
+            'staff': 2,
+            'price': 3,
+            'ambience': 4,
+            'menu': 5,
+            'place': 6,
+            'miscellaneous': 7
+        }
     else:
         tokenized_term_train = []
         tokenized_term_test = []
@@ -177,5 +187,5 @@ def get_data(train_data_file, test_data_file, batch_size, ATSA=False):
         (test_ids, test_aspects, test_labels))
     test_loader = test_loader.batch(batch_size)
 
-    return train_loader, test_loader
+    return train_loader, test_loader, vocab, term_vocab
 

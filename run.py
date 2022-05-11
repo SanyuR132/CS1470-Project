@@ -1,6 +1,7 @@
 import argparse
 import CNN_atsa
 import CNN_gate_aspect
+from glove import *
 from preprocess import *
 import os
 import time
@@ -18,13 +19,20 @@ args = parser.parse_args()
 # maybe just hard code some values instead of having a parser
 
 def main():
-    train_loader, test_loader = get_data(train_data_file="./data/train.xml", test_data_file="./data/test.xml", batch_size=100, ATSA=False)
-
-    model = CNN_atsa.CNN_Gate_Aspect_Text()
-    model2 = CNN_gate_aspect.CNN_Gate_Aspect_Text()
-    acc = train(model, train_loader)
+    print(f'loading in data')
+    acsa_train_loader, acsa_test_loader, acsa_vocab, acsa_aspect_vocab = get_data(train_data_file="./data/acsa_train.xml", test_data_file="./data/acsa_test.xml", batch_size=100, ATSA=False)
+    # atsa_train_loader, atsa_test_loader, atsa_vocab, atsa_aspect_vocab = get_data(train_data_file="./data/atsa_train.xml", test_data_file="./data/atsa_test.xml", batch_size=100, ATSA=True)
+    print('finished loading and beginning embedding')
+    acsa_embedding_matrix, acsa_embedding_matrix_aspect = load_glove_embedding(path_to_glove_file=, vocab=acsa_vocab, aspect_vocab=acsa_aspect_vocab, embedding_dim=300)
+    # atsa_embedding_matrix, atsa_embedding_matrix_aspect = load_glove_embedding(path_to_glove_file=, vocab=atsa_vocab, aspect_vocab=atsa_aspect_vocab, embedding_dim=300)
+    print('finished embeddings')
+    acsa_model = CNN_gate_aspect.CNN_Gate_Aspect_Text(acsa_embedding_matrix, acsa_embedding_matrix_aspect)
+    # atsa_model = CNN_atsa.CNN_Gate_Aspect_Text(atsa_embedding_matrix, atsa_embedding_matrix_aspect)
+    print('begin training')
+    acc = train(acsa_model, acsa_train_loader)
+    print('finish training')
     print(f'acc is {acc}')
-    test_acc = test(model, test_loader)
+    test_acc = test(acsa_model, acsa_test_loader)
     print(f'test acc is {test_acc}')
 
 
