@@ -13,7 +13,7 @@ import pickle
 # https://github.com/jiangqn/GCAE-pytorch/blob/master/main.py
 
 embedding_size = 300
-num_epochs = 1
+num_epochs = 15
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--embedding_size', type=int, default=300)
