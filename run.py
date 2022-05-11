@@ -77,7 +77,7 @@ def main():
 
 def train(model, train_loader):
     optimizer = tf.keras.optimizers.Adam(args.learning_rate)
-    loss_fn = tf.keras.losses.SparseCategoricalCrossEntropy()
+    loss_fn = tf.keras.losses.SparseCategoricalCrossentropy()
     for epoch in range(args.num_epochs):
         print(f'current epoch = {epoch}')
         train_total_cases = 0
