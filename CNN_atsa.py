@@ -4,7 +4,7 @@ import math
 
 class CNN_Gate_Aspect_Text(tf.keras.model):
     def __init__(self, args):
-        D = args.embed_dim
+        D = 300
         C = args.class_num
 
         Co = args.kernel_num
