@@ -54,7 +54,7 @@ def pickle_it():
 
 def main():
     if (args.glove_file_path != ""):
-        pickle_it(args.glove_file_path)
+        pickle_it()
     # atsa_train_loader, atsa_test_loader, atsa_vocab, atsa_aspect_vocab = get_data(train_data_file="./data/atsa_train.xml", test_data_file="./data/atsa_test.xml", batch_size=100, ATSA=True)
     # atsa_embedding_matrix, atsa_embedding_matrix_aspect = load_glove_embedding(path_to_glove_file=, vocab=atsa_vocab, aspect_vocab=atsa_aspect_vocab, embedding_dim=300)
     acsa_train_loader = tf.data.experimental.load('acsa_train_load')
