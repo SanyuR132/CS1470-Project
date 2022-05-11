@@ -1,13 +1,16 @@
 import tensorflow as tf
 import numpy as np
-import math
+from tensorflow import keras
 
 class CNN_Gate_Aspect_Text(tf.keras.model):
-    def __init__(self, args):
-        D = 300
+    def __init__(self, args, embeddings):
+        D = embeddings.shape[1]
         C = args.class_num
 
         Co = args.kernel_num
+
+        self.embedding_layer = tf.keras.layers.Embedding(len(embeddings), D, 
+        embeddings_initializer= keras.initializers.Constant(embeddings), trainable = True)
 
         self.conv_layer_11 = tf.nn.conv1d(D, Co, 3)
         self.conv_layer_12 = tf.nn.conv1d(D, Co, 4)
