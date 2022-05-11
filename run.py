@@ -83,6 +83,7 @@ def train(model, train_loader):
         train_total_cases = 0
         train_correct_cases = 0
         max_correct = 0
+        total_accuracy = 0
         for batch in train_loader:
             sentences, aspects, labels = batch
             if len(sentences) != 100:
@@ -103,15 +104,18 @@ def train(model, train_loader):
             print(f'acc is {num_correct / 100}')
             max_correct = max(max_correct, num_correct)
             train_correct_cases += num_correct
-        train_accuracy = train_correct_cases / train_total_cases
+            train_accuracy = train_correct_cases / args.batch_size
+            total_accuracy += train_accuracy
+        total_accuracy = total_accuracy/(train_total_cases/args.batch_size)
         print(
-            f'epoch {epoch} has acc {train_accuracy}, max_correct is {max_correct}')
-    return train_accuracy
+            f'epoch {epoch} has acc {total_accuracy}, max_correct is {max_correct}')
+    return total_accuracy
 
 
 def test(model, test_loader):
     test_total_cases = 0
     test_correct_cases = 0
+    total_accuracy = 0
     for batch in test_loader:
         sentences, aspects, labels = batch
         if len(sentences) != 100:
@@ -122,8 +126,10 @@ def test(model, test_loader):
         num_correct = tf.reduce_sum(
             tf.cast(tf.equal(predictions, labels), dtype=tf.float32))
         test_correct_cases += num_correct
-    test_accuracy = test_correct_cases / test_total_cases
-    return test_accuracy
+        test_accuracy = test_correct_cases / args.batch_size
+        total_accuracy += test_accuracy
+    total_accuracy = total_accuracy/(test_total_case/args.batch_sizes)
+    return total_accuracy
 
 
 if __name__ == '__main__':
