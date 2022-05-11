@@ -78,12 +78,13 @@ def main():
 def train(model, train_loader):
     optimizer = tf.keras.optimizers.Adam(args.learning_rate)
     loss_fn = tf.keras.losses.SparseCategoricalCrossentropy()
+
     for epoch in range(args.num_epochs):
         print(f'current epoch = {epoch}')
         train_total_cases = 0
+        total_accuracy = 0
         train_correct_cases = 0
         max_correct = 0
-        total_accuracy = 0
         for batch in train_loader:
             sentences, aspects, labels = batch
             if len(sentences) != 100:
@@ -101,14 +102,13 @@ def train(model, train_loader):
                 print(f'there were {filtered} values over 2')
             num_correct = tf.reduce_sum(
                 tf.cast(tf.equal(predictions, labels), dtype=tf.float32))
-            print(f'acc is {num_correct / 100}')
+            print(f'acc is {num_correct / args.batch_size}')
             max_correct = max(max_correct, num_correct)
             train_correct_cases += num_correct
-            train_accuracy = train_correct_cases / args.batch_size
-            total_accuracy += train_accuracy
+            total_accuracy += num_correct / args.batch_size
         total_accuracy = total_accuracy/(train_total_cases/args.batch_size)
-        print(
-            f'epoch {epoch} has acc {total_accuracy}, max_correct is {max_correct}')
+    print(
+        f'epoch {epoch} has acc {total_accuracy}, max_correct is {max_correct}')
     return total_accuracy
 
 
@@ -125,8 +125,7 @@ def test(model, test_loader):
         test_total_cases += labels.shape[0]
         num_correct = tf.reduce_sum(
             tf.cast(tf.equal(predictions, labels), dtype=tf.float32))
-        test_correct_cases += num_correct
-        test_accuracy = test_correct_cases / args.batch_size
+        test_accuracy = num_correct / args.batch_size
         total_accuracy += test_accuracy
     total_accuracy = total_accuracy/(test_total_cases/args.batch_size)
     return total_accuracy
