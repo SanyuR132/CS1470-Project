@@ -43,7 +43,7 @@ class CNN_Gate_Aspect_Text(tf.keras.Model):
         aspect_v = tf.math.reduce_sum(
             aspect_v, 1) / tf.cast(tf.shape(aspect_v)[1], dtype=tf.float32)
 
-        aa = tf.nn.relu(self.conv_layer_31(aspect_v.transpose(1, 2)))
+        aa = tf.nn.relu(self.conv_layer_31(aspect_v))
         aa = tf.keras.layers.MaxPooling1D(aa, aa.size(2))
         aspect_v = aa
 
