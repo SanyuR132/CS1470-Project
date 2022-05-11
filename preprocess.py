@@ -113,7 +113,7 @@ def get_aspect_categories_ids(train_aspects, test_aspects):
     return train_aspects, test_aspects
 
 
-def get_data(train_data_file, test_data_file, batch_size, ATSA=False):
+def get_data(train_data_file, test_data_file, batch_size, ATSA):
     train_sents, train_aspects, train_labels = read_data(train_data_file, ATSA)
     test_sents, test_aspects, test_labels = read_data(test_data_file, ATSA)
     max_sent_len_train = 0
@@ -135,10 +135,11 @@ def get_data(train_data_file, test_data_file, batch_size, ATSA=False):
 
     vocab, token_id = build_vocab(tokenized_train)
 
-    
-    tokenized_train = [pad_sentence(sent, max_sent_len_train - len(sent)) for sent in tokenized_train]
+    tokenized_train = [pad_sentence(
+        sent, max_sent_len_train - len(sent)) for sent in tokenized_train]
 
-    tokenized_test = [pad_sentence(sent, max_sent_len_train - len(sent)) for sent in tokenized_test]
+    tokenized_test = [pad_sentence(
+        sent, max_sent_len_train - len(sent)) for sent in tokenized_test]
 
     train_ids = convert_to_id(vocab, tokenized_train)
     test_ids = convert_to_id(vocab, tokenized_test)
@@ -166,13 +167,15 @@ def get_data(train_data_file, test_data_file, batch_size, ATSA=False):
                 max_term_len_ATSA_train = len(term)
             tokenized_term_train.append(sentence_tokenizer(term))
         # TODO TODO TODO check if padding should be on both sides vs just one side TODO TODO TODO
-        tokenized_term_train = [pad_sentence(term, max_term_len_ATSA_train - len(term)) for term in tokenized_term_train]
+        tokenized_term_train = [pad_sentence(
+            term, max_term_len_ATSA_train - len(term)) for term in tokenized_term_train]
         for term in test_aspects:
             if len(sent) > max_term_len_ATSA_test:
                 max_term_len_ATSA_test = len(term)
             tokenized_term_test.append(sentence_tokenizer(term))
         # TODO TODO TODO check if padding should be on both sides vs just one side TODO TODO TODO
-        tokenized_term_test = [pad_sentence(term, max_term_len_ATSA_train - len(term)) for term in tokenized_term_test]
+        tokenized_term_test = [pad_sentence(
+            term, max_term_len_ATSA_train - len(term)) for term in tokenized_term_test]
 
         term_vocab, term_token_id = build_vocab(tokenized_term_train)
         train_aspects = convert_to_id(term_vocab, tokenized_term_train)
@@ -188,4 +191,3 @@ def get_data(train_data_file, test_data_file, batch_size, ATSA=False):
     test_loader = test_loader.batch(batch_size)
 
     return train_loader, test_loader, vocab, term_vocab
-

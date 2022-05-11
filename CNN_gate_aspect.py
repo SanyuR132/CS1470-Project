@@ -5,7 +5,7 @@ from tensorflow import keras
 class CNN_Gate_Aspect_Text(tf.keras.Model):
     def __init__(self, feature_embeddings, aspect_embeddings, args):
         super(CNN_Gate_Aspect_Text, self).__init__()
-        D = feature_embeddings.shape[1]  # embedding dimension
+        D = args.embedding_dim  # embedding dimension
         C = 3  # no. of output classes
         Co = 100  # no. of kernels/filters
 
