@@ -4,10 +4,9 @@ from tensorflow import keras
 
 class CNN_Gate_Aspect_Text(tf.keras.model):
     def __init__(self, embeddings):
-        D = embeddings.shape[1]
-        C = 4
-
-        Co = 3
+        D = embeddings.shape[1] ## embedding dimension
+        C = 4 ## no. of output classes
+        Co = 3 ## no. of kernels/filters
 
         self.embedding_layer = tf.keras.layers.Embedding(len(embeddings), D, 
         embeddings_initializer= keras.initializers.Constant(embeddings), trainable = True)
