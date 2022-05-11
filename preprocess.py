@@ -163,14 +163,14 @@ def get_data(train_data_file, test_data_file, batch_size, ATSA):
         tokenized_term_train = []
         tokenized_term_test = []
         for term in train_aspects:
-            if len(sent) > max_term_len_ATSA_train:
+            if len(term) > max_term_len_ATSA_train:
                 max_term_len_ATSA_train = len(term)
             tokenized_term_train.append(sentence_tokenizer(term))
         # TODO TODO TODO check if padding should be on both sides vs just one side TODO TODO TODO
         tokenized_term_train = [pad_sentence(
             term, max_term_len_ATSA_train - len(term)) for term in tokenized_term_train]
         for term in test_aspects:
-            if len(sent) > max_term_len_ATSA_test:
+            if len(term) > max_term_len_ATSA_test:
                 max_term_len_ATSA_test = len(term)
             tokenized_term_test.append(sentence_tokenizer(term))
         # TODO TODO TODO check if padding should be on both sides vs just one side TODO TODO TODO
