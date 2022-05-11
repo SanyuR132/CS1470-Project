@@ -14,7 +14,7 @@ import pickle
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--embedding_size', type=int, default=300,
+parser.add_argument('--embedding_dim', type=int, default=300,
                     help="must correspond to glove file being used")
 parser.add_argument('--num_epochs', type=int, default=15)
 parser.add_argument('--learning_rate', type=int, default=0.001)
