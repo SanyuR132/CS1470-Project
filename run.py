@@ -39,8 +39,6 @@ def pickle_it():
         path_to_glove_file=args.glove_file_path, vocab=acsa_vocab, aspect_vocab=acsa_aspect_vocab, embedding_dim=args.embedding_dim)
     # atsa_embedding_matrix, atsa_embedding_matrix_aspect = load_glove_embedding(path_to_glove_file=, vocab=atsa_vocab, aspect_vocab=atsa_aspect_vocab, embedding_dim=300)
     print('finished embeddings')
-    acsa_model = CNN_gate_aspect.CNN_Gate_Aspect_Text(
-        acsa_embedding_matrix, acsa_embedding_matrix_aspect)
     # atsa_model = CNN_atsa.CNN_Gate_Aspect_Text(atsa_embedding_matrix, atsa_embedding_matrix_aspect)
     dbfile4 = open('acsa_embedding_matrix', 'ab')
     pickle.dump(acsa_embedding_matrix, dbfile4)
@@ -67,7 +65,7 @@ def main():
     dbfile5.close()
 
     acsa_model = CNN_gate_aspect.CNN_Gate_Aspect_Text(
-        acsa_embedding_matrix, acsa_embedding_matrix_aspect)
+        acsa_embedding_matrix, acsa_embedding_matrix_aspect, args)
     # atsa_model = CNN_atsa.CNN_Gate_Aspect_Text(atsa_embedding_matrix, atsa_embedding_matrix_aspect)
     print('begin training')
     acc = train(acsa_model, acsa_train_loader)
