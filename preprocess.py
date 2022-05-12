@@ -130,7 +130,6 @@ def get_data(train_data_file, test_data_file, batch_size, ATSA):
 
     print(
         f'in preprocess: max_sent_len (in training data) = {max_sent_len_train}')
-    print(f'longest sentence: {max_sent}')
 
     tokenized_test = []
     for sent in test_sents:
@@ -149,6 +148,9 @@ def get_data(train_data_file, test_data_file, batch_size, ATSA):
 
     train_ids = convert_to_id(vocab, tokenized_train)
     test_ids = convert_to_id(vocab, tokenized_test)
+
+    print(
+        f'train sentences padded sentence length = {len(tokenized_train[0])}')
 
     train_labels, test_labels = get_label_ids(train_labels, test_labels)
 
@@ -171,13 +173,15 @@ def get_data(train_data_file, test_data_file, batch_size, ATSA):
         tokenized_term_test = [sentence_tokenizer(
             term) for term in test_aspects]
         tokenized_term_train = [pad_sentence(
-            term, max_term_len_train - len(term)) for term in tokenized_term_train]
+            term, max_sent_len_train - len(term)) for term in tokenized_term_train]
         tokenized_term_test = [pad_sentence(
-            term, max_term_len_test - len(term)) for term in tokenized_term_test]
+            term, max_sent_len_test - len(term)) for term in tokenized_term_test]
 
         term_vocab, term_token_id = build_vocab(tokenized_term_train)
         train_aspects = convert_to_id(term_vocab, tokenized_term_train)
         test_aspects = convert_to_id(term_vocab, tokenized_term_test)
+
+        print(f'train terms padded length = {len(train_aspects[0])}')
 
     train_loader = tf.data.Dataset.from_tensor_slices(
         (train_ids, train_aspects, train_labels))
