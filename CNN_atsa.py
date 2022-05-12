@@ -41,7 +41,7 @@ class CNN_Gate_Aspect_Text(tf.keras.Model):
             aspect_v, 1) / tf.cast(tf.shape(aspect_v)[1], dtype=tf.float32)
 
         aa = tf.nn.relu(self.conv_layer_3(aspect_v))
-        aa = tf.keras.layers.MaxPooling1D(aa, aa.size(2))
+        aa = tf.math.reduce_max(aa, 1) ## check axis == 1 \\ reduce_max does the max pooling 
         aspect_v = aa
 
         x = [tf.nn.tanh(conv_layer(feature))
@@ -52,7 +52,7 @@ class CNN_Gate_Aspect_Text(tf.keras.Model):
 
         x = [i*j for i, j in zip(x, y)]
 
-        x = [tf.math.reduce_max(i, 1) for i in x] ## max_pooling
+        x = [tf.math.reduce_max(i, 1) for i in x] ## max_pooling using reduce_max
 
         x = tf.concat(x, 1)
 
