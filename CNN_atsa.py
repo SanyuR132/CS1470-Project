@@ -36,7 +36,7 @@ class CNN_Gate_Aspect_Text(tf.keras.Model):
         aspect_v = self.aspect_embedding_layer(aspect)
         print(f'aspect_v initial shape = {aspect_v.shape}')
 
-        aspect_v = tf.nn.relu(self.conv3_layer(tf.expand_dims(aspect_v, 2)))
+        aspect_v = tf.nn.relu(self.conv3_layer(aspect_v))
         print(f'aspect_v shape after conv = {aspect_v.shape}')
         # check axis == 1 \\ reduce_max does the max pooling
         aspect_v = tf.math.reduce_max(aspect_v, 1)
