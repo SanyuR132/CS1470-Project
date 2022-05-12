@@ -30,17 +30,13 @@ class CNN_Gate_Aspect_Text(tf.keras.Model):
         self.fc_aspect = tf.keras.layers.Dense(num_filters)
 
     def forward(self, feature, aspect):
-
-        feature = self.feature_embedding_layer(feature)
-        aspect_v = self.aspect_embedding_layer(aspect)
-        aspect_v = aspect_v.sum(1) / aspect_v.size(1)
-
+        
         feature = self.feature_embedding_layer(feature)
         aspect_v = self.aspect_embedding_layer(aspect)
         aspect_v = tf.math.reduce_sum(
-            aspect_v, 1) / tf.cast(tf.shape(aspect_v)[1], dtype=tf.float32)
+            aspect_v, 0) / tf.cast(tf.shape(aspect_v)[1], dtype=tf.float32)
 
-        aa = tf.nn.relu(self.conv_layer_3(aspect_v))
+        aa = tf.nn.relu(self.conv3_layer(aspect_v))
         aa = tf.math.reduce_max(aa, 1) ## check axis == 1 \\ reduce_max does the max pooling 
         aspect_v = aa
 
