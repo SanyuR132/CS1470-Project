@@ -118,8 +118,6 @@ def get_data(train_data_file, test_data_file, batch_size, ATSA):
     test_sents, test_aspects, test_labels = read_data(test_data_file, ATSA)
     max_sent_len_train = 0
     max_sent_len_test = 0
-    max_term_len_ATSA_train = 0
-    max_term_len_ATSA_test = 0
 
     max_sent = None
 
@@ -168,24 +166,14 @@ def get_data(train_data_file, test_data_file, batch_size, ATSA):
             'miscellaneous': 7
         }
     else:
-        tokenized_term_train = []
-        tokenized_term_test = []
-        for term in train_aspects:
-            tokenized_term = sentence_tokenizer(term)
-            if len(tokenized_term) > max_term_len_ATSA_train:
-                max_term_len_ATSA_train = len(tokenized_term)
-            tokenized_term_train.append(tokenized_term)
-        # TODO TODO TODO check if padding should be on both sides vs just one side TODO TODO TODO
+        tokenized_term_train = [sentence_tokenizer(
+            term) for term in train_aspects]
+        tokenized_term_test = [sentence_tokenizer(
+            term) for term in test_aspects]
         tokenized_term_train = [pad_sentence(
-            term, max_term_len_ATSA_train - len(term)) for term in tokenized_term_train]
-        for term in test_aspects:
-            tokenized_term = sentence_tokenizer(term)
-            if len(term) > max_term_len_ATSA_test:
-                max_term_len_ATSA_test = len(tokenized_term)
-            tokenized_term_test.append(tokenized_term)
-        # TODO TODO TODO check if padding should be on both sides vs just one side TODO TODO TODO
+            term, max_term_len_train - len(term)) for term in tokenized_term_train]
         tokenized_term_test = [pad_sentence(
-            term, max_term_len_ATSA_train - len(term)) for term in tokenized_term_test]
+            term, max_term_len_test - len(term)) for term in tokenized_term_test]
 
         term_vocab, term_token_id = build_vocab(tokenized_term_train)
         train_aspects = convert_to_id(term_vocab, tokenized_term_train)
