@@ -46,7 +46,7 @@ class CNN_Gate_Aspect_Text(tf.keras.Model):
              for conv_layer in self.conv1_layers]  # size = [batch_size x num_filters (output channels) x sentence_length (shortened by convolution)]
         print(f'sentence matrix size after conv = {x[0].shape}')
 
-        y = [tf.nn.relu(conv_layer(feature) + self.fc_aspect(tf.expand_dims(aspect_v, 0)))
+        y = [tf.nn.relu(conv_layer(feature) + self.fc_aspect(tf.expand_dims(aspect_v, 1)))
              for conv_layer in self.conv2_layers]
 
         x = [i*j for i, j in zip(x, y)]
