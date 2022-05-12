@@ -25,13 +25,14 @@ parser.add_argument('--glove_file_path', type=str, default="",
 
 parser.add_argument('--atsa', action='store_true', default=False,
                     help='if specified, run atsa model; otherwise, run acsa model')
-parser.add_argument('--use_glove_embeddings',
-                    action='store_true', default=False)
 
 parser.add_argument('--num_filters', type=int, default=100)
+parser.add_argument('--kernel_sizes', type=str, default='3,4,5',
+                    help='comma-separated kernel sizes for convolution; number of kernel sizes specifies number of convolution layers')
 
 args = parser.parse_args()
-# maybe just hard code some values instead of having a parser
+
+args.kernel_sizes = [int(i) for i in args.kernel_sizes.split(',')]
 
 
 def pickle_it():
@@ -70,56 +71,42 @@ def pickle_it():
 def main():
     if (args.glove_file_path != ""):
         pickle_it()
-    if args.use_glove_embeddings:
-        if not args.atsa:
-            acsa_train_loader = tf.data.experimental.load('acsa_train_load')
-            acsa_test_loader = tf.data.experimental.load('acsa_test_load')
-            dbfile4 = open('acsa_embedding_matrix', 'rb')
-            acsa_embedding_matrix = pickle.load(dbfile4)
-            dbfile4.close()
-            dbfile5 = open('acsa_embedding_matrix_aspect', 'rb')
-            acsa_embedding_matrix_aspect = pickle.load(dbfile5)
-            dbfile5.close()
+    if not args.atsa:
+        acsa_train_loader = tf.data.experimental.load('acsa_train_load')
+        acsa_test_loader = tf.data.experimental.load('acsa_test_load')
+        dbfile4 = open('acsa_embedding_matrix', 'rb')
+        acsa_embedding_matrix = pickle.load(dbfile4)
+        dbfile4.close()
+        dbfile5 = open('acsa_embedding_matrix_aspect', 'rb')
+        acsa_embedding_matrix_aspect = pickle.load(dbfile5)
+        dbfile5.close()
 
-            acsa_model = CNN_gate_aspect.CNN_Gate_Aspect_Text(
-                acsa_embedding_matrix, acsa_embedding_matrix_aspect, args)
-            print('begin training')
-            acc = train(acsa_model, acsa_train_loader)
-            print('finish training')
-            print(f'main acc is {acc}')
-            test_acc = test(acsa_model, acsa_test_loader)
-            print(f'test acc is {test_acc}')
-        else:
-            atsa_train_loader = tf.data.experimental.load('atsa_train_load')
-            atsa_test_loader = tf.data.experimental.load('atsa_test_load')
-            dbfile4 = open('atsa_embedding_matrix', 'rb')
-            atsa_embedding_matrix = pickle.load(dbfile4)
-            dbfile4.close()
-            dbfile5 = open('atsa_embedding_matrix_aspect', 'rb')
-            atsa_embedding_matrix_aspect = pickle.load(dbfile5)
-            dbfile5.close()
-
-            atsa_model = CNN_atsa.CNN_Gate_Aspect_Text(
-                atsa_embedding_matrix, atsa_embedding_matrix_aspect, args)
-            print('begin training')
-            acc = train(atsa_model, atsa_train_loader)
-            print('finish training')
-            print(f'acc is {acc}')
-            test_acc = test(atsa_model, atsa_test_loader)
-            print(f'test acc is {test_acc}')
+        acsa_model = CNN_gate_aspect.CNN_Gate_Aspect_Text(
+            acsa_embedding_matrix, acsa_embedding_matrix_aspect, args)
+        print('begin training')
+        acc = train(acsa_model, acsa_train_loader)
+        print('finish training')
+        print(f'main acc is {acc}')
+        test_acc = test(acsa_model, acsa_test_loader)
+        print(f'test acc is {test_acc}')
     else:
-        if not args.atsa:
-            acsa_train_loader, acsa_test_loader, acsa_vocab, acsa_aspect_vocab = get_data(
-                train_data_file="./data/acsa_train.xml", test_data_file="./data/acsa_test.xml", batch_size=args.batch_size, ATSA=args.atsa)
-            args.vocab_size = len(acsa_vocab)
-            acsa_model = CNN_gate_aspect.CNN_Gate_Aspect_Text(
-                [], [], args)
-            print('begin training')
-            acc = train(acsa_model, acsa_train_loader)
-            print('finish training')
-            print(f'main acc is {acc}')
-            test_acc = test(acsa_model, acsa_test_loader)
-            print(f'test acc is {test_acc}')
+        atsa_train_loader = tf.data.experimental.load('atsa_train_load')
+        atsa_test_loader = tf.data.experimental.load('atsa_test_load')
+        dbfile4 = open('atsa_embedding_matrix', 'rb')
+        atsa_embedding_matrix = pickle.load(dbfile4)
+        dbfile4.close()
+        dbfile5 = open('atsa_embedding_matrix_aspect', 'rb')
+        atsa_embedding_matrix_aspect = pickle.load(dbfile5)
+        dbfile5.close()
+
+        atsa_model = CNN_atsa.CNN_Gate_Aspect_Text(
+            atsa_embedding_matrix, atsa_embedding_matrix_aspect, args)
+        print('begin training')
+        acc = train(atsa_model, atsa_train_loader)
+        print('finish training')
+        print(f'acc is {acc}')
+        test_acc = test(atsa_model, atsa_test_loader)
+        print(f'test acc is {test_acc}')
 
 
 def train(model, train_loader):
