@@ -17,28 +17,28 @@ class CNN_Gate_Aspect_Text(tf.keras.Model):
         self.aspect_embedding_layer = tf.keras.layers.Embedding(len(
             aspect_embeddings), emb_dim, embeddings_initializer=keras.initializers.Constant(aspect_embeddings), trainable=True)
 
-
         self.conv1_layers = [tf.keras.layers.Conv1D(
             num_filters, kern_size,  input_shape=(None, emb_dim)) for kern_size in kern_sizes]
 
         self.conv2_layers = [tf.keras.layers.Conv1D(
             num_filters, kern_size, input_shape=(None, emb_dim)) for kern_size in kern_sizes]
-        
-        self.conv3_layers = tf.keras.layers.Conv1D(num_filters, 3,  input_shape=(None, emb_dim), padding='SAME')
+
+        self.conv3_layer = tf.keras.layers.Conv1D(
+            num_filters, 3,  input_shape=(None, emb_dim), padding='SAME')
 
         self.fully_connected = tf.keras.layers.Dense(num_classes)
         self.fc_aspect = tf.keras.layers.Dense(num_filters)
 
     def forward(self, feature, aspect):
-    
-    
+
         feature = self.feature_embedding_layer(feature)
         aspect_v = self.aspect_embedding_layer(aspect)
         aspect_v = tf.math.reduce_sum(
             aspect_v, 0) / tf.cast(tf.shape(aspect_v)[1], dtype=tf.float32)
 
         aa = tf.nn.relu(self.conv3_layer(aspect_v))
-        aa = tf.math.reduce_max(aa, 1) ## check axis == 1 \\ reduce_max does the max pooling 
+        # check axis == 1 \\ reduce_max does the max pooling
+        aa = tf.math.reduce_max(aa, 1)
         aspect_v = aa
 
         x = [tf.nn.tanh(conv_layer(feature))
@@ -49,11 +49,12 @@ class CNN_Gate_Aspect_Text(tf.keras.Model):
 
         x = [i*j for i, j in zip(x, y)]
 
-        x = [tf.math.reduce_max(i, 1) for i in x] ## max_pooling using reduce_max
+        x = [tf.math.reduce_max(i, 1)
+             for i in x]  # max_pooling using reduce_max
 
         x = tf.concat(x, 1)
 
-        x = tf.nn.dropout(x, 0.5) ## dropout - is 0.5 too high?
+        x = tf.nn.dropout(x, 0.5)  # dropout - is 0.5 too high?
 
         logits = self.fully_connected(x)
         probs = tf.nn.softmax(logits)
