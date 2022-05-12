@@ -94,7 +94,7 @@ def main():
         atsa_embedding_matrix_aspect = pickle.load(dbfile5)
         dbfile5.close()
 
-        atsa_model = CNN_gate_aspect.CNN_Gate_Aspect_Text(
+        atsa_model = CNN_atsa.CNN_Gate_Aspect_Text(
             atsa_embedding_matrix, atsa_embedding_matrix_aspect, args)
         print('begin training')
         acc = train(atsa_model, atsa_train_loader)
