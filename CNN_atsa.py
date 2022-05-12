@@ -32,17 +32,22 @@ class CNN_Gate_Aspect_Text(tf.keras.Model):
     def forward(self, feature, aspect):
 
         feature = self.feature_embedding_layer(feature)
+        print(f'sentence matrix size = {feature.shape}')
         aspect_v = self.aspect_embedding_layer(aspect)
+        print(f'aspect_v initial shape = {aspect_v.shape}')
         aspect_v = tf.math.reduce_sum(
             aspect_v, 0) / tf.cast(tf.shape(aspect_v)[1], dtype=tf.float32)
+        print(f'aspect_v shape after reduce sum = {aspect_v.shape}')
 
-        aa = tf.nn.relu(self.conv3_layer(tf.expand_dims(aspect_v, 2)))
+        aspect_v = tf.nn.relu(self.conv3_layer(tf.expand_dims(aspect_v, 2)))
+        print(f'aspect_v shape after conv = {aspect_v.shape}')
         # check axis == 1 \\ reduce_max does the max pooling
-        aa = tf.math.reduce_max(aa, 1)
-        aspect_v = aa
+        aspect_v = tf.math.reduce_max(aspect_v, 1)
+        print(f'aspect_v shape after max-over-time = {aspect_v.shape}')
 
         x = [tf.nn.tanh(conv_layer(feature))
              for conv_layer in self.conv1_layers]  # size = [batch_size x num_filters (output channels) x sentence_length (shortened by convolution)]
+        print(f'sentence matrix size after conv = {x[0].shape}')
 
         y = [tf.nn.relu(conv_layer(feature) + self.fc_aspect(tf.expand_dims(aspect_v, 0)))
              for conv_layer in self.conv2_layers]
