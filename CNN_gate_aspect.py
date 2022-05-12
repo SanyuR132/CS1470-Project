@@ -34,21 +34,20 @@ class CNN_Gate_Aspect_Text(tf.keras.Model):
         aspect_v = tf.math.reduce_sum(
             aspect_v, 0) / tf.cast(tf.shape(aspect_v)[1], dtype=tf.float32)  # summarizing the aspect embeddings into a single vector
 
-        x = [tf.transpose(tf.nn.tanh(conv_layer(feature)), perm=[0, 2, 1])
+        x = [tf.nn.tanh(conv_layer(feature))
              for conv_layer in self.conv1_layers]  # size = [batch_size x num_filters (output channels) x sentence_length (shortened by convolution)]
 
-        y = [tf.transpose(tf.nn.relu(conv_layer(feature) + self.fc_aspect(tf.expand_dims(aspect_v, 0))), perm=[0, 2, 1])
+        y = [tf.nn.relu(conv_layer(feature) + self.fc_aspect(tf.expand_dims(aspect_v, 0)))
              for conv_layer in self.conv2_layers]
 
         x = [i * j for i, j in zip(x, y)]
 
-        # basically, they're max-pooling over the sentence length using a kernel of size (sentence_length),
+        # in the original code, they're max-pooling over the sentence length using a kernel of size (sentence_length),
         # which is the same as just taking the max (this is apparently "max-over-time pooling", as mentioned in the paper)
-        # I have NO clue why they do it this way
-        # size = [batch_size x num_filters]
-        x = [tf.math.reduce_max(i, -1) for i in x]
+        # I have NO clue why they do it this way; we're just gonna use max
+        # output_size = [batch_size x num_filters]
+        x = [tf.math.reduce_max(i, 1) for i in x]
 
-        x = [tf.reshape(i, (tf.shape(i)[0], -1)) for i in x]
         x = tf.concat(x, 1)
 
         logits = self.fully_connected(x)
