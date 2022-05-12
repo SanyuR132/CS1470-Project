@@ -64,7 +64,7 @@ class CNN_Gate_Aspect_Text(tf.keras.Model):
         x = [tf.reshape(i, (tf.shape(i)[0], -1)) for i in x]
 
         x = tf.concat(x0, 1)
-        x = self.dropout(x)
+        x = tf.nn.dropout(x, 0.5)
         logits = self.fully_connected(x0)
         probs = tf.nn.softmax(logits)
 
