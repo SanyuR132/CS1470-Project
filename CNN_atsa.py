@@ -30,7 +30,8 @@ class CNN_Gate_Aspect_Text(tf.keras.Model):
         self.fc_aspect = tf.keras.layers.Dense(num_filters)
 
     def forward(self, feature, aspect):
-        
+    
+    
         feature = self.feature_embedding_layer(feature)
         aspect_v = self.aspect_embedding_layer(aspect)
         aspect_v = tf.math.reduce_sum(
