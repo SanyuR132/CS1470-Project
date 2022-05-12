@@ -117,6 +117,7 @@ def train(model, train_loader):
         print(f'current epoch = {epoch}')
         train_total_cases = 0
         total_accuracy = 0
+        total_loss = 0
         train_correct_cases = 0
         max_correct = 0
         for batch in train_loader:
@@ -137,14 +138,17 @@ def train(model, train_loader):
             num_correct = tf.reduce_sum(
                 tf.cast(tf.equal(predictions, labels), dtype=tf.float32))
             print(f'batch acc is {num_correct / args.batch_size}')
+            print(f'avg loss across batch is {loss / args.batch_size} \n')
 
             max_correct = max(max_correct, num_correct)
             total_accuracy += num_correct / args.batch_size
-        total_accuracy = total_accuracy/(train_total_cases/args.batch_size)
+            total_loss += loss / args.batch_size
+        avg_accuracy = total_accuracy / (train_total_cases / args.batch_size)
+        avg_loss = total_loss / (train_total_cases / args.batch_size)
         print(
-            f'epoch {epoch} has acc {total_accuracy}, max_correct is {max_correct}')
+            f'epoch {epoch} has avg acc {avg_accuracy}, avg loss {avg_loss}, and max_correct is {max_correct}')
 
-    return total_accuracy
+    return avg_accuracy
 
 
 def test(model, test_loader):
