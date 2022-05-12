@@ -24,7 +24,7 @@ class CNN_Gate_Aspect_Text(tf.keras.Model):
             num_filters, kern_size, input_shape=(None, emb_dim)) for kern_size in kern_sizes]
 
         self.conv3_layer = tf.keras.layers.Conv1D(
-            num_filters, 3,  input_shape=(None, emb_dim), padding='SAME')
+            num_filters, 3,  input_shape=(None, emb_dim))
 
         self.fully_connected = tf.keras.layers.Dense(num_classes)
         self.fc_aspect = tf.keras.layers.Dense(num_filters)
