@@ -138,7 +138,7 @@ def train(model, train_loader):
             num_correct = tf.reduce_sum(
                 tf.cast(tf.equal(predictions, labels), dtype=tf.float32))
             print(f'batch acc is {num_correct / args.batch_size}')
-            print(f'avg loss across batch is {loss / args.batch_size} \n')
+            print(f'batch loss is {loss} \n')
 
             max_correct = max(max_correct, num_correct)
             total_accuracy += num_correct / args.batch_size
