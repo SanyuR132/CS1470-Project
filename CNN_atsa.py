@@ -35,9 +35,6 @@ class CNN_Gate_Aspect_Text(tf.keras.Model):
         print(f'sentence matrix size = {feature.shape}')
         aspect_v = self.aspect_embedding_layer(aspect)
         print(f'aspect_v initial shape = {aspect_v.shape}')
-        aspect_v = tf.math.reduce_sum(
-            aspect_v, 0) / tf.cast(tf.shape(aspect_v)[1], dtype=tf.float32)
-        print(f'aspect_v shape after reduce sum = {aspect_v.shape}')
 
         aspect_v = tf.nn.relu(self.conv3_layer(tf.expand_dims(aspect_v, 2)))
         print(f'aspect_v shape after conv = {aspect_v.shape}')
