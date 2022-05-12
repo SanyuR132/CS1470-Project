@@ -5,15 +5,23 @@ from tensorflow import keras
 class CNN_Gate_Aspect_Text(tf.keras.Model):
     def __init__(self, feature_embeddings, aspect_embeddings, args):
         super(CNN_Gate_Aspect_Text, self).__init__()
+        self.args = args
         D = args.embedding_dim  # embedding dimension
         C = 3  # no. of output classes
-        Co = 100  # no. of kernels/filters
+        Co = args.num_filters  # no. of kernels/filters
 
-        self.feature_embedding_layer = tf.keras.layers.Embedding(len(feature_embeddings), D,
-                                                                 embeddings_initializer=keras.initializers.Constant(feature_embeddings), trainable=True)
+        if (self.args.use_glove_embeddings):
+            self.feature_embedding_layer = tf.keras.layers.Embedding(len(feature_embeddings), D,
+                                                                     embeddings_initializer=keras.initializers.Constant(feature_embeddings), trainable=True)
 
-        self.aspect_embedding_layer = tf.keras.layers.Embedding(len(aspect_embeddings), D,
-                                                                embeddings_initializer=keras.initializers.Constant(aspect_embeddings), trainable=True)
+            self.aspect_embedding_layer = tf.keras.layers.Embedding(len(aspect_embeddings), D,
+                                                                    embeddings_initializer=keras.initializers.Constant(aspect_embeddings), trainable=True)
+        else:
+            self.feature_embedding_layer = tf.keras.layers.Embedding(
+                args.vocab_size, D)
+
+            self.aspect_embedding_layer = tf.keras.layers.Embedding(
+                8, D)
 
         self.conv_layer_11 = tf.keras.layers.Conv1D(
             Co, 3, input_shape=(None, D))

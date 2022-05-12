@@ -5,9 +5,10 @@ from tensorflow import keras
 class CNN_Gate_Aspect_Text(tf.keras.Model):
     def __init__(self, feature_embeddings, aspect_embeddings, args):
         super(CNN_Gate_Aspect_Text, self).__init__()
+        self.args = args
         D = args.embedding_dim  # embedding dimension
         C = 3  # no. of output classes
-        Co = 100  # no. of kernels/filters
+        Co = args.num_filters  # no. of kernels/filters
 
         self.feature_embedding_layer = tf.keras.layers.Embedding(len(feature_embeddings), D,
                                                                  embeddings_initializer=keras.initializers.Constant(feature_embeddings), trainable=True)
@@ -41,7 +42,7 @@ class CNN_Gate_Aspect_Text(tf.keras.Model):
         aspect_v = tf.math.reduce_sum(
             aspect_v, 1) / tf.cast(tf.shape(aspect_v)[1], dtype=tf.float32)
 
-        aa = tf.nn.relu(self.conv_layer_31(aspect_v))
+        aa = tf.nn.relu(self.conv_layer_3(aspect_v))
         aa = tf.keras.layers.MaxPooling1D(aa, aa.size(2))
         aspect_v = aa
 
