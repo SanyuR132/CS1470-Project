@@ -121,11 +121,18 @@ def get_data(train_data_file, test_data_file, batch_size, ATSA):
     max_term_len_ATSA_train = 0
     max_term_len_ATSA_test = 0
 
+    max_sent = None
+
     tokenized_train = []
     for sent in train_sents:
         if len(sent) > max_sent_len_train:
             max_sent_len_train = len(sent)
+            max_sent = sent
         tokenized_train.append(sentence_tokenizer(sent))
+
+    print(
+        f'in preprocess: max_sent_len (in training data) = {max_sent_len_train}')
+    print(f'longest sentence: {max_sent}')
 
     tokenized_test = []
     for sent in test_sents:
